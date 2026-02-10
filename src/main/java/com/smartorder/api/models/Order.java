@@ -4,15 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.smartorder.api.models.enums.OrderStatus;
+import com.smartorder.api.enums.OrderStatus;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +21,7 @@ public class Order extends BaseEntity {
     private Client client;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status = OrderStatus.CREATED;
 
     private BigDecimal totalPrice;
@@ -34,22 +29,37 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderEvent> events = new ArrayList<>();
-
     public Order(Client client) {
         this.client = client;
     }
 
-    public void changeStatus(OrderStatus newStatus, String changedBy) {
-        OrderEvent event = new OrderEvent(
-                this,
-                this.status,
-                newStatus,
-                changedBy);
-
+    public void changeStatus(OrderStatus newStatus) {
         this.status = newStatus;
-        this.events.add(event);
     }
 
+    public void confirm() {
+        ensureStatus(OrderStatus.CREATED);
+        changeStatus(OrderStatus.CONFIRMED);
+    }
+
+    public void pay() {
+        ensureStatus(OrderStatus.CONFIRMED);
+        changeStatus(OrderStatus.PAID);
+    }
+
+    public void cancel() {
+        if (this.status == OrderStatus.DELIVERED) {
+            throw new IllegalStateException("Delivered order cannot be canceled");
+        }
+
+        changeStatus(OrderStatus.CANCELED);
+
+    }
+
+    private void ensureStatus(OrderStatus expected) {
+        if (this.status != expected) {
+            throw new IllegalStateException(
+                    String.format("Expected order status to be %s but was %s", expected, this.status));
+        }
+    }
 }

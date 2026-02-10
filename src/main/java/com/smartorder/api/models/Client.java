@@ -1,6 +1,6 @@
 package com.smartorder.api.models;
 
-import com.smartorder.api.models.enums.ClientStatus;
+import com.smartorder.api.enums.ClientStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "clients", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email"),
-        @UniqueConstraint(columnNames = "document")
+        @UniqueConstraint(columnNames = "cpf")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
