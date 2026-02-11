@@ -1,15 +1,14 @@
 package com.smartorder.api.models;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.smartorder.api.enums.OrderStatus;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -17,7 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @Enumerated(EnumType.STRING)
