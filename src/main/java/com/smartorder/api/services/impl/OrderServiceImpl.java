@@ -2,6 +2,7 @@ package com.smartorder.api.services.impl;
 
 import com.smartorder.api.dtos.order.OrderRequestDTO;
 import com.smartorder.api.dtos.order.OrderResponseDTO;
+import com.smartorder.api.dtos.orderItem.OrderItemResponseDTO;
 import com.smartorder.api.models.Client;
 import com.smartorder.api.models.Order;
 import com.smartorder.api.repositories.ClientRepository;
@@ -70,17 +71,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponseDTO mapToResponse(Order order) {
-        List<Long> productIds = order.getItems()
+        List<OrderItemResponseDTO> productIds = order.getItems()
                 .stream()
-                .map(item -> item.getProduct().getId())
+                .map(item -> new OrderItemResponseDTO(
+                        item.getProduct().getId(),
+                        item.getProduct().getName(),
+                        item.getQuantity(),
+                        item.getUnitPrice(),
+                        item.getSubtotal())
+                )
                 .toList();
 
         return new OrderResponseDTO(
                 order.getId(),
                 order.getClient().getId(),
-                productIds,
                 order.getStatus().name(),
-                order.getCreatedAt()
+                order.getTotalPrice(),
+                order.getCreatedAt(),
+                productIds
         );
     }
 }

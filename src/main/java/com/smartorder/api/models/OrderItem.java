@@ -1,35 +1,32 @@
 package com.smartorder.api.models;
 
-import java.math.BigDecimal;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_items")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    public Order order;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    public Product product;
 
     @Column(nullable = false)
-    private Integer quantity;
+    public Integer quantity;
 
     @Column(nullable = false)
-    private BigDecimal unitPrice;
+    public BigDecimal unitPrice;
 
     public OrderItem(Product product, Integer quantity, BigDecimal unitPrice) {
         if (quantity <= 0) {
@@ -43,5 +40,9 @@ public class OrderItem extends BaseEntity {
 
     void attachToOrder(Order order) {
         this.order = order;
+    }
+
+    public BigDecimal getSubtotal() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

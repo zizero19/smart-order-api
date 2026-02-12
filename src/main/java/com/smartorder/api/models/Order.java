@@ -2,7 +2,7 @@ package com.smartorder.api.models;
 
 import com.smartorder.api.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,21 +13,22 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order extends BaseEntity {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    public Client client;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status = OrderStatus.CREATED;
+    public OrderStatus status = OrderStatus.CREATED;
 
-    private BigDecimal totalPrice;
+    public BigDecimal totalPrice;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
+    public List<OrderItem> items = new ArrayList<>();
 
     public Order(Client client) {
         this.client = client;
@@ -54,6 +55,21 @@ public class Order extends BaseEntity {
 
         changeStatus(OrderStatus.CANCELED);
 
+    }
+
+    public void addItem(Product product, Integer quantity) {
+
+        OrderItem item = new OrderItem(this, product, quantity, product.getPrice());
+
+        this.items.add(item);
+
+        recalculateTotalPrice();
+    }
+
+    private void recalculateTotalPrice() {
+        this.totalPrice = items.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void ensureStatus(OrderStatus expected) {

@@ -1,32 +1,33 @@
 package com.smartorder.api.models;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Getter
 public class Product extends BaseEntity {
 
     @Column(name = "product_name", nullable = false, length = 150)
-    private String name;
+    public String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    public BigDecimal price;
 
     @Column(nullable = false)
-    private Integer stock;
+    public Integer stock;
 
     @Column(nullable = false)
-    private Boolean active = true;
+    public Boolean active = true;
 
     @Column(length = 50)
-    private String category;
+    public String category;
 
     public Product(String name, BigDecimal price, Integer stock, String category) {
         if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {

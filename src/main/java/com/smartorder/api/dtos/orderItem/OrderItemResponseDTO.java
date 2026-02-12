@@ -3,8 +3,10 @@ package com.smartorder.api.dtos.orderItem;
 import java.math.BigDecimal;
 
 public record OrderItemResponseDTO(
+        Long productId,
         String productName,
         Integer quantity,
-        BigDecimal unitPrice
+        BigDecimal unitPrice,
+        BigDecimal subtotal
 ) {
 }

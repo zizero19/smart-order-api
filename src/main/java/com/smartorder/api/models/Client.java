@@ -1,14 +1,7 @@
 package com.smartorder.api.models;
 
 import com.smartorder.api.enums.ClientStatus;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AccessLevel;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,24 +11,24 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(columnNames = "cpf")
 })
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Client extends BaseEntity {
 
     @Column(nullable = false, length = 120)
-    private String name;
+    public String name;
 
     @Column(nullable = false, length = 150)
-    private String email;
+    public String email;
 
     @Column(length = 20)
-    private String cpf;
+    public String cpf;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ClientStatus status = ClientStatus.ACTIVE;
+    public ClientStatus status = ClientStatus.ACTIVE;
 
     @Column(nullable = false)
-    private Integer score = 0;
+    public Integer score = 0;
 
     public Client(String name, String email, String cpf) {
         if (name == null || name.isBlank()) {
