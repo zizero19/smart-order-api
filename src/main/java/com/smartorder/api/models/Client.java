@@ -32,7 +32,7 @@ public class Client extends BaseEntity {
 
     public Client(String name, String email, String cpf) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Noem do cliente é obrigatorio.");
+            throw new IllegalArgumentException("Nome do cliente é obrigatorio.");
         }
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Email do cliente é obrigatorio.");
