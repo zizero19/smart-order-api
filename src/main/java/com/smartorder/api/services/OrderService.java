@@ -9,9 +9,9 @@ public interface OrderService {
 
     OrderResponseDTO create(OrderRequestDTO request);
 
-    OrderResponseDTO findByOrderId(Long id);
+    List<OrderResponseDTO> getAllOrders();
 
-    List<OrderResponseDTO> findAllOrders();
+    OrderResponseDTO findByOrderId(Long id);
 
     void delete(Long id);
 }

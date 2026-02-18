@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<OrderResponseDTO> findAllOrders() {
+    public List<OrderResponseDTO> getAllOrders() {
 
         return orderRepository.findAll()
                 .stream()
@@ -78,8 +78,7 @@ public class OrderServiceImpl implements OrderService {
                         item.getProduct().getName(),
                         item.getQuantity(),
                         item.getUnitPrice(),
-                        item.getSubtotal())
-                )
+                        item.getSubtotal()))
                 .toList();
 
         return new OrderResponseDTO(
@@ -88,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
                 order.getStatus().name(),
                 order.getTotalPrice(),
                 order.getCreatedAt(),
-                productIds
-        );
+                productIds);
     }
 }
