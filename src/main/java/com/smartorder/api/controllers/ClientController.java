@@ -25,10 +25,7 @@ public class ClientController {
 
     @PostMapping()
     public ResponseEntity<ClientResponseDTO> create(@RequestBody ClientRequestDTO clientRequest) {
-
-        ClientResponseDTO clientResponse = clientService.create(clientRequest);
-
-        return ResponseEntity.ok().body(clientResponse);
+        return ResponseEntity.ok().body(clientService.create(clientRequest));
 
     }
 
