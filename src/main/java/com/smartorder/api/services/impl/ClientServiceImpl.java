@@ -3,10 +3,12 @@ package com.smartorder.api.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.smartorder.api.dtos.client.ClientRequestDTO;
 import com.smartorder.api.dtos.client.ClientResponseDTO;
+import com.smartorder.api.mappers.ClientMapper;
 import com.smartorder.api.models.Client;
 import com.smartorder.api.repositories.ClientRepository;
 import com.smartorder.api.services.ClientService;
@@ -16,6 +18,9 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class ClientServiceImpl implements ClientService {
+
+    @Autowired
+    private ClientMapper mapper;
 
     private final ClientRepository clientRepository;
 
@@ -36,7 +41,7 @@ public class ClientServiceImpl implements ClientService {
 
         clientRepository.save(newClient);
 
-        return mapToResponse(newClient);
+        return mapper.toResponse(newClient);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
         client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente nao encontrado"));
 
-        return mapToResponse(client);
+        return mapper.toResponse(client);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
 
         return clientRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(mapper::toResponse)
                 .toList();
     }
 
@@ -68,13 +73,4 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.delete(client);
     }
 
-    private ClientResponseDTO mapToResponse(Client client) {
-        return new ClientResponseDTO(
-                client.getId(),
-                client.getName(),
-                client.getEmail(),
-                client.getCpf(),
-                client.getStatus(),
-                client.getScore());
-    }
 }
