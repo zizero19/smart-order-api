@@ -73,6 +73,8 @@ public class ClientServiceImpl implements ClientService {
                 client.getId(),
                 client.getName(),
                 client.getEmail(),
-                client.getCpf());
+                client.getCpf(),
+                client.getStatus(),
+                client.getScore());
     }
 }

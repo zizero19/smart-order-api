@@ -2,8 +2,10 @@ package com.smartorder.api.models;
 
 import com.smartorder.api.enums.ClientStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "clients", uniqueConstraints = {
@@ -11,7 +13,9 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(columnNames = "cpf")
 })
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Client extends BaseEntity {
 
     @Column(nullable = false, length = 120)
