@@ -68,6 +68,36 @@ public class Order extends BaseEntity {
         recalculateTotalPrice();
     }
 
+    public void removeItem(Long orderItemId) {
+        if (orderItemId == null) {
+            throw new IllegalArgumentException("Id do item é obrigatório.");
+        }
+
+        boolean removed = this.items.removeIf(i -> orderItemId.equals(i.getId()));
+        if (!removed) {
+            throw new RuntimeException("Item do pedido não encontrado");
+        }
+
+        recalculateTotalPrice();
+    }
+
+    public void changeItemQuantity(Long orderItemId, Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantidade de itens deve ser maior que zero.");
+        }
+        if (orderItemId == null) {
+            throw new IllegalArgumentException("Id do item é obrigatório.");
+        }
+
+        OrderItem item = this.items.stream()
+                .filter(i -> orderItemId.equals(i.getId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item do pedido não encontrado"));
+
+        item.setQuantity(quantity);
+        recalculateTotalPrice();
+    }
+
     private void recalculateTotalPrice() {
         this.totalPrice = items.stream()
                 .map(OrderItem::getSubtotal)
