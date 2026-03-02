@@ -2,7 +2,6 @@ package com.smartorder.api.services.impl;
 
 import com.smartorder.api.dtos.order.OrderRequestDTO;
 import com.smartorder.api.dtos.order.OrderResponseDTO;
-import com.smartorder.api.dtos.orderItem.OrderItemResponseDTO;
 import com.smartorder.api.mappers.OrderMapper;
 import com.smartorder.api.models.Client;
 import com.smartorder.api.models.Order;
@@ -69,7 +68,8 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        orderRepository.save(order);
+        order.confirm();
+        order = orderRepository.save(order);
 
         return orderMapper.toResponse(order);
 
