@@ -3,6 +3,7 @@ package com.smartorder.api.services.impl;
 import com.smartorder.api.dtos.order.OrderRequestDTO;
 import com.smartorder.api.dtos.order.OrderResponseDTO;
 import com.smartorder.api.dtos.orderItem.OrderItemResponseDTO;
+import com.smartorder.api.mappers.OrderMapper;
 import com.smartorder.api.models.Client;
 import com.smartorder.api.models.Order;
 import com.smartorder.api.models.Product;
@@ -11,6 +12,8 @@ import com.smartorder.api.repositories.OrderRepository;
 import com.smartorder.api.repositories.ProductRepository;
 import com.smartorder.api.services.OrderService;
 import jakarta.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private OrderMapper orderMapper;
+
 
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
@@ -64,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        return mapToResponse(order);
+        return orderMapper.toResponse(order);
 
     }
 
@@ -76,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
         order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order nao encontrada"));
 
-        return mapToResponse(order);
+        return orderMapper.toResponse(order);
     }
 
     @Override
@@ -85,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(orderMapper::toResponse)
                 .toList();
     }
 
@@ -99,23 +106,4 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(id);
     }
 
-    private OrderResponseDTO mapToResponse(Order order) {
-        List<OrderItemResponseDTO> productIds = order.getItems()
-                .stream()
-                .map(item -> new OrderItemResponseDTO(
-                        item.getProduct().getId(),
-                        item.getProduct().getName(),
-                        item.getQuantity(),
-                        item.getUnitPrice(),
-                        item.getSubtotal()))
-                .toList();
-
-        return new OrderResponseDTO(
-                order.getId(),
-                order.getClient().getId(),
-                order.getStatus().name(),
-                order.getTotalPrice(),
-                order.getCreatedAt(),
-                productIds);
-    }
 }
